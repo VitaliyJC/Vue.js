@@ -2,4 +2,4 @@
 
 ## Project name
 
-Project name: JavaScript
+Vue.js
