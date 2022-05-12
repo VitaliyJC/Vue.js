@@ -1,8 +1,12 @@
 <template>
   <div class="form-wrapper">
     <input v-model="date" placeholder="date" />
-    <input v-model="category" placeholder="category" />
-    <input v-model="value" placeholder="value" />
+    <select v-model="category" v-if="categoryList">
+      <option v-for="(value, idx) in categoryList" :key="idx">
+        {{ value }}
+      </option>
+    </select>
+    <input v-model.number="value" placeholder="value" />
     <button @click="onClickSave">Save</button>
   </div>
 </template>
@@ -26,6 +30,9 @@ export default {
       };
       return new Intl.DateTimeFormat("UTC", options).format(today);
     },
+    categoryList() {
+      return this.$store.getters.getCategoryList;
+    },
   },
   methods: {
     onClickSave() {
@@ -34,9 +41,13 @@ export default {
         category: this.category,
         value: this.value,
       };
-      this.$emit("addNewPayment", data);
-      console.log(data);
+      this.$store.commit("addDataToPaymentsList", data); //привязка к хранилищу
+      // this.$emit("addNewPayment", data); без привязки к хранилищу
     },
   },
+  async created() {
+    await this.$store.dispatch("fetchCategoryList");
+  },
+  mounted() {},
 };
 </script>
