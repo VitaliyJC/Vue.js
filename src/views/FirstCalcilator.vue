@@ -3,6 +3,7 @@
     <div>
       <img alt="Vue logo" src="../assets/logo.png" />
       <MyCalculator msg="Калькулятор" />
+      
     </div>
   </div>
 </template>
