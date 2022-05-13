@@ -1,6 +1,6 @@
 <template>
   <div class="form-wrapper">
-    <input v-model="date" placeholder="date" />
+    <input v-model="date" placeholder=" date" />
     <select v-model="category" v-if="categoryList">
       <option v-for="(value, idx) in categoryList" :key="idx">
         {{ value }}
@@ -48,6 +48,18 @@ export default {
   async created() {
     await this.$store.dispatch("fetchCategoryList");
   },
-  mounted() {},
+  mounted() {
+    const { category, section } = this.$route.params;
+    if (!category || !section) {
+      return;
+    }
+    this.category = category;
+    const { value } = this.$route.query;
+    if (!value) return;
+    this.value = value;
+    if (this.value && this.category) {
+      this.onClickSave();
+    }
+  },
 };
 </script>

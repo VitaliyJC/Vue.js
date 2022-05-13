@@ -9,7 +9,28 @@
       <AddPaymentForm v-if="showForm" />
       <PaymentsDisplay :items="currentElements" />
       <!-- <AddPaymentForm v-if="showForm" @addNewPayment="addPaymentData" /> -->
-      <MyPagination :cur="cur" :length="12" :n="n" @changePage="changePage" />
+      <MyPagination :cur="cur" :length="getPaymentsList.length" :n="n" @changePage="changePage" />
+
+      <router-link
+      :to="{
+        name: 'AddPaymentForm',
+        params: { section: 'payment', category: 'Food' },
+        query: { value: 200 },
+      }">Food 200</router-link>
+    <br />
+    <router-link
+      :to="{
+        name: 'AddPaymentForm',
+        params: { section: 'payment', category: 'Transport' },
+        query: { value: 50 },
+      }">Transport 50</router-link>
+    <br />
+    <router-link
+      :to="{
+        name: 'AddPaymentForm',
+        params: { section: 'payment', category: 'Entertainment' },
+        query: { value: 2000 },
+      }">Entertainment 2000</router-link>
     </main>
   </div>
 </template>
@@ -34,7 +55,7 @@ export default {
     return {
       showForm: false,
       cur: 1,
-      n: 3,
+      n: 5,
     };
   },
 
@@ -76,11 +97,10 @@ export default {
     // },
     changePage(p) {
       this.cur = p;
-      this.$store.dispatch("fetchData", p);
     },
   },
   created() {
-    this.$store.dispatch("fetchData", this.cur);
+    this.$store.dispatch("fetchData");
     // this.$store.commit('setPaymentsListData', this.fetchData())
   },
   mounted() {},

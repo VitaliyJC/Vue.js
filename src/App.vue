@@ -2,7 +2,8 @@
   <div id="app">
     <nav>
       <router-link to="/">My personal costs</router-link> |
-      <router-link to="/mycalc">First calcilator</router-link>
+      <router-link to="/mycalc">First calcilator</router-link> |
+      <router-link to="/notfound">NotFound</router-link>
     </nav>
     <router-view />
   </div>
