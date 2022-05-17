@@ -7,7 +7,10 @@
       </option>
     </select>
     <input v-model.number="value" placeholder="value" />
-    <button @click="onClickSave">Save</button>
+    <button @click="onClickSave" v-if="!showContextMenuForm">Save</button>
+    <button @click="editData" v-if="showContextMenuForm">
+      Закончить редактирование
+    </button>
   </div>
 </template>
 <script>
@@ -19,6 +22,10 @@ export default {
       category: "",
       value: "",
     };
+  },
+  props: {
+    showContextMenuForm: Boolean,
+    activeTarget: Number,
   },
   computed: {
     getCurrentDate() {
@@ -43,6 +50,15 @@ export default {
       };
       this.$store.commit("addDataToPaymentsList", data); //привязка к хранилищу
       // this.$emit("addNewPayment", data); без привязки к хранилищу
+    },
+    editData() {
+      let editObj = {
+        date: this.date,
+        category: this.category,
+        value: this.value,
+      };
+      this.$store.commit("editPaymentsListItem", [this.activeTarget, editObj]);
+      this.$editContextMenu.hide("hide");
     },
   },
   async created() {
