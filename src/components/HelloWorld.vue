@@ -5,12 +5,12 @@
       <div>Total Price = {{ getFullPaymentValue }}</div>
     </header>
     <main>
-      <button @click="showForm = !showForm">Add new cost +</button>
+      <button @click="openModalForm">Add new cost +</button>
+      <!-- <button @click="showForm = !showForm">Add new cost +</button> -->
       <AddPaymentForm v-if="showForm" />
-      <PaymentsDisplay :items="currentElements" />
+      <PaymentsDisplay :items="currentElements" :curPage="cur"/>
       <!-- <AddPaymentForm v-if="showForm" @addNewPayment="addPaymentData" /> -->
       <MyPagination :cur="cur" :length="getPaymentsList.length" :n="n" @changePage="changePage" />
-
       <router-link
       :to="{
         name: 'AddPaymentForm',
@@ -98,6 +98,9 @@ export default {
     changePage(p) {
       this.cur = p;
     },
+    openModalForm(){
+      this.$modal.show('addform', {title: "Add New Payment", component: 'AddPaymentForm'})
+    }
   },
   created() {
     this.$store.dispatch("fetchData");

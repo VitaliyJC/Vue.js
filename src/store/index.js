@@ -5,13 +5,38 @@ Vue.use(Vuex)
 
 const mutations = {
   setPaymentsListData(state, payload) {
-    state.paymentList = payload
+    if (state.paymentsList.length == 0) {
+      state.paymentsList = payload;
+    } else {
+      state.paymentsListFromNotFoundView = state.paymentsList;
+      state.paymentsList = payload;
+      state.paymentsList.push(...state.paymentsListFromNotFoundView);
+    }
   },
   addDataToPaymentsList(state, payload) {
-    state.paymentList.push(payload)
+    state.paymentsList.push(payload)
   },
-  // ediPaymentListFirstElement(state, payload) {
-  //   Vue.set(state.paymentList, 0, payload)
+  removeItemFromPaymentsList(state, payload) {
+    state.paymentsList.splice(payload, 1);
+  },
+  setPaymentsListDataFromNotFoundView(state, payload) {
+    state.paymentsListFromNotFoundView.push(payload);
+  },
+  editPaymentsListItem(state, payload) {
+    let idx = payload[0];
+    let obj = payload[1];
+    if (payload[1].category !== "") {
+      state.paymentsList[idx].category = obj.category;
+    }
+    if (payload[1].value !== "") {
+      state.paymentsList[idx].value = obj.value;
+    }
+    if (payload[1].date !== "") {
+      state.paymentsList[idx].date = obj.date;
+    }
+  },
+  // ediPaymentsListFirstElement(state, payload) {
+  //   Vue.set(state.paymentsList, 0, payload)
   // }
   setCategories(state, payload) {
     state.categoryList = payload
@@ -19,16 +44,16 @@ const mutations = {
 }
 
 const getters = {
-  getPaymentsList: state => state.paymentList,
+  getPaymentsList: state => state.paymentsList,
   getFullPaymentValue: state => {
-    return state.paymentList.reduce((res, cur) => res + cur.value, 0)
+    return state.paymentsList.reduce((res, cur) => res + cur.value, 0)
   },
   getCategoryList: state => state.categoryList
 }
 
 export default new Vuex.Store({
   state: {
-    paymentList: [],
+    paymentsList: [],
     categoryList: [],
   },
   mutations,
