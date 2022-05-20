@@ -61,7 +61,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .paymentsList {
   margin-top: 20px;
 }

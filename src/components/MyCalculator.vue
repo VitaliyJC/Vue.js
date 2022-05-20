@@ -1,8 +1,8 @@
 <template>
   <div class="calculator">
     <h1>{{ msg }}</h1>
-    <input v-model.lazy="operand1" />
-    <input v-model.lazy="operand2" />
+    <input v-model.number="operand1" name="operand1"/>
+    <input v-model.number="operand2" name="operand2"/>
     = {{ result }}
     <br />
     <div class="error" v-show="error">
@@ -12,8 +12,9 @@
     <div class="keybord">
       <button
         v-for="operation in operations"
-        v-bind:key="operation"
+        :key="operation"
         @click="calculate(operation)"
+        :name="operation"
       >
         {{ operation }}
       </button>
@@ -23,28 +24,22 @@
     <label for="checkbox"> Отобразить экранную клавиатуру</label>
     <div class="numbers" v-show="checked">
       <div class="keyBtn">
-        <button v-for="num in keyBtn" v-bind:key="num" @click="inpunNum(num)">
+        <button v-for="num in keyBtn" :key="num" @click="inpunNum(num)" :name="num" type="keyboard">
           {{ num }}
         </button>
-        <button @click="clearInput()">←</button>
+        <button @click="clearInput()" name="←">←</button>
       </div>
       <br />
-      <input
+      <label><input
         type="radio"
-        id="one"
-        value="operand1"
+        value="1"
         v-model="picked"
-        name="radio"
-      />
-      <label for="one">Операнд 1</label>
-      <input
+      />Операнд 1</label>
+      <label><input
         type="radio"
-        id="two"
-        value="operand2"
+        value="2"
         v-model="picked"
-        name="radio"
-      />
-      <label for="two">Операнд 2</label>
+      />Операнд 2</label>
     </div>
   </div>
 </template>
@@ -58,11 +53,11 @@ export default {
   data() {
     return {
       result: 0,
-      operand1: "0",
-      operand2: "0",
+      operand1: 0,
+      operand2: 0,
       error: "",
-      checked: "",
-      picked: "operand1",
+      checked: false,
+      picked: "1",
       operations: ["+", "-", "/", "*", "^"],
       keyBtn: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
     };
@@ -89,7 +84,7 @@ export default {
       }
     },
     add() {
-      this.result = +this.operand1 + +this.operand2;
+      this.result = this.operand1 + this.operand2;
     },
     substract() {
       this.result = this.operand1 - this.operand2;
@@ -109,18 +104,14 @@ export default {
       this.result = Math.pow(this.operand1, this.operand2);
     },
     inpunNum(num) {
-      if (this.picked === "operand1") {
-        this.operand1 += num;
-      } else {
-        this.operand2 += num;
-      }
+      const { picked } = this;
+      const input = picked === "1" ? "operand1" : "operand2";
+      this[input] = +(this[input] += String(num));
     },
     clearInput() {
-      if (this.picked === "operand1") {
-        this.operand1 = this.operand1.slice(0, -1);
-      } else {
-        this.operand2 = this.operand2.slice(0, -1);
-      }
+      const { picked } = this;
+      const input = picked === "1" ? "operand1" : "operand2";
+      this[input] = +String(this[input]).slice(0, -1);
     },
   },
 };
