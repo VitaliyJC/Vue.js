@@ -1,5 +1,13 @@
 <template>
-  <div class="form-wrapper">
+
+  <v-card class="pa-8">
+    <v-text-field v-model="date" label="Date" />
+    <v-text-field v-model="value" label="Value" />
+    <v-select v-model="category" :items="categoryList" label="Category" />
+    <v-btn color="teal" dark @click="onClickSave" :ripple="false">Save</v-btn>
+  </v-card>
+
+  <!-- <div class="form-wrapper">
     <input v-model="date" placeholder=" date" />
     <select v-model="category" v-if="categoryList">
       <option v-for="(value, idx) in categoryList" :key="idx">
@@ -11,7 +19,7 @@
     <button @click="editData" v-if="showContextMenuForm">
       Закончить редактирование
     </button>
-  </div>
+  </div> -->
 </template>
 <script>
 export default {
@@ -21,12 +29,10 @@ export default {
       date: "",
       category: "",
       value: "",
+      showEditBtn: false,
     };
   },
-  props: {
-    showContextMenuForm: Boolean,
-    activeTarget: Number,
-  },
+  props: {},
   computed: {
     getCurrentDate() {
       const today = new Date();
@@ -40,25 +46,27 @@ export default {
     categoryList() {
       return this.$store.getters.getCategoryList;
     },
+    editDataList() {
+      return this.$store.getters.getEditDataList;
+    },
   },
   methods: {
     onClickSave() {
-      const data = {
-        date: this.date || this.getCurrentDate,
-        category: this.category,
-        value: this.value,
-      };
-      this.$store.commit("addDataToPaymentsList", data); //привязка к хранилищу
-      // this.$emit("addNewPayment", data); без привязки к хранилищу
-    },
-    editData() {
-      let editObj = {
-        date: this.date,
-        category: this.category,
-        value: this.value,
-      };
-      this.$store.commit("editPaymentsListItem", [this.activeTarget, editObj]);
-      this.$editContextMenu.hide("hide");
+      if (this.editDataList.length === 0) {
+        const data = {
+          date: this.date || this.getCurrentDate,
+          category: this.category,
+          value: this.value,
+        };
+        this.$store.commit("addDataToPaymentsList", data);
+      } else {
+        let editObj = {
+          date: this.date,
+          category: this.category,
+          value: this.value,
+        };
+        this.$store.commit("editPaymentsListItem", editObj);
+      }
     },
   },
   async created() {

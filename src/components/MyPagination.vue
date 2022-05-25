@@ -1,16 +1,18 @@
 <template>
-  <div :class="[$style.wrp]">
+
+  <div>
+    <div class="text-center pt-2">
+      <v-pagination v-model="cur" :length="0"></v-pagination>
+    </div>
+  </div>
+
+  <!-- <div :class="[$style.wrp]">
     <div @click="onClick(cur - 1)">-</div>
-    <div
-      v-for="i in amount"
-      :key="i"
-      :class="{ [$style.active]: cur === i }"
-      @click="onClick(i)"
-    >
+    <div v-for="i in amount" :key="i" :class="{ [$style.active]: cur === i }" @click="onClick(i)">
       {{ i }}
     </div>
     <div @click="onClick(cur + 1)">+</div>
-  </div>
+  </div> -->
 </template>
 <script>
 export default {
@@ -38,8 +40,10 @@ export default {
 <style module lang="scss">
 .wrp {
   display: flex;
-  & > div {
+
+  &>div {
     padding: 10px;
+
     &.active {
       background: #ccc;
     }
