@@ -14,26 +14,35 @@ const mutations = {
     }
   },
   addDataToPaymentsList(state, payload) {
-    state.paymentsList.push(payload)
+    state.paymentsList.push(payload);
   },
   removeItemFromPaymentsList(state, payload) {
-    state.paymentsList.splice(payload, 1);
+    let idxEl = state.paymentsList.indexOf(payload);
+    state.paymentsList.splice(idxEl, 1);
   },
   setPaymentsListDataFromNotFoundView(state, payload) {
     state.paymentsListFromNotFoundView.push(payload);
   },
+  addDataToEditPaymentsList(state, payload) {
+    state.editDataList.push(payload);
+  },
   editPaymentsListItem(state, payload) {
-    let idx = payload[0];
-    let obj = payload[1];
-    if (payload[1].category !== "") {
-      state.paymentsList[idx].category = obj.category;
+    if (state.editDataList.length > 1) {
+      state.editDataList = state.editDataList.reverse();
     }
-    if (payload[1].value !== "") {
-      state.paymentsList[idx].value = obj.value;
+    let outdatedData = state.editDataList[0];
+    let idxOutdatedData = state.paymentsList.indexOf(outdatedData);
+    let actualData = payload;
+    if (actualData.category !== "") {
+      state.paymentsList[idxOutdatedData].category = actualData.category;
     }
-    if (payload[1].date !== "") {
-      state.paymentsList[idx].date = obj.date;
+    if (actualData.value !== "") {
+      state.paymentsList[idxOutdatedData].value = actualData.value;
     }
+    if (actualData.date !== "") {
+      state.paymentsList[idxOutdatedData].date = actualData.date;
+    }
+    state.editDataList = [];
   },
   // ediPaymentsListFirstElement(state, payload) {
   //   Vue.set(state.paymentsList, 0, payload)
@@ -44,17 +53,20 @@ const mutations = {
 }
 
 const getters = {
-  getPaymentsList: state => state.paymentsList,
-  getFullPaymentValue: state => {
-    return state.paymentsList.reduce((res, cur) => res + cur.value, 0)
+  getPaymentList: (state) => state.paymentsList,
+  getFullPaymentValue: (state) => {
+    return state.paymentsList.reduce((res, cur) => res + cur.value, 0);
   },
-  getCategoryList: state => state.categoryList
+  getCategoryList: (state) => state.categoryList,
+  getEditDataList: (state) => state.editDataList,
 }
 
 export default new Vuex.Store({
   state: {
     paymentsList: [],
     categoryList: [],
+    paymentsListFromNotFoundView: [],
+    editDataList: [],
   },
   mutations,
   actions: {
