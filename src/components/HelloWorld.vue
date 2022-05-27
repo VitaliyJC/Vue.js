@@ -17,7 +17,7 @@
       <v-col>
         <div class="text-h5 text-sm-h3 pb-3">Costs by categories</div>
         <v-card>
-          <Doughnut :items="paymentsList" />
+          <Doughnut :chartDataDoughnut="chartDataDoughnut" />
         </v-card>
 
       </v-col>
@@ -39,14 +39,67 @@ export default {
   data() {
     return {
       dialog: false,
-      components: { Doughnut }
-    }
+      chartDataDoughnut: {
+        labels: [],
+        datasets: [
+          {
+            backgroundColor: [
+              "#41B883",
+              "#E46651",
+              "#00D8FF",
+              "#DD1B16",
+              "ffa500",
+            ],
+            data: [],
+          },
+        ],
+      },
+    };
   },
   computed: {
     paymentsList() {
       return this.$store.getters.getPaymentList;
     },
+    DoughnutCategoryList() {
+      const DoughnutPaymentList = this.$store.getters.getPaymentList;
+      const DoughnutCategoryList = [];
+      for (let i = 0; i < DoughnutPaymentList.length; i++) {
+        if (!DoughnutCategoryList.includes(DoughnutPaymentList[i].category)) {
+          DoughnutCategoryList.push(DoughnutPaymentList[i].category);
+        }
+      }
+      return DoughnutCategoryList;
+    },
+    getCategorySumDoughnut() {
+      const DoughnutPaymentList = this.$store.getters.getPaymentList;
+      const CategorySum = [];
+      const categoryList = this.chartDataDoughnut.labels;
+      for (let category of categoryList) {
+        const filteredList = DoughnutPaymentList.filter(
+          (item) => item.category == category
+        );
+        let sum = filteredList.reduce((res, cur) => res + cur.value, 0);
+        CategorySum.push(sum);
+      }
+      return CategorySum;
+    },
   },
+  watch: {
+    DoughnutCategoryList() {
+      this.chartDataDoughnut.labels.push(this.DoughnutCategoryList);
+      if (this.DoughnutCategoryList.length === 0) {
+        this.chartDataDoughnut.labels = [];
+        this.chartDataDoughnut.datasets.backgroundColor = [];
+        this.chartDataDoughnut.datasets.data = [];
+      } else {
+        this.chartDataDoughnut.labels = this.DoughnutCategoryList;
+      }
+    },
+    getCategorySumDoughnut() {
+      this.chartDataDoughnut.datasets[0].data = this.getCategorySumDoughnut;
+    },
+  },
+
   methods: {
     editMode(item) {
       this.dialog = true;
