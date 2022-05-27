@@ -52,7 +52,11 @@ export default {
           width: "150",
           align: "left",
         },
-        { text: "Edit", value: "actions", sortable: false },
+        {
+          text: "Edit",
+          value: "actions",
+          sortable: false
+        },
       ];
     },
   },
